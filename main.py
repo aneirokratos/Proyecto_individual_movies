@@ -46,7 +46,7 @@ async def cantidad_filmaciones_dia_endpoint(dia: str):
     # Obtener la cantidad de registros que coinciden
     cantidad = len(data_filtrado)
     mensaje = f"La cantidad de películas estrenadas en el día es {cantidad}"
-    return {mensaje}
+    return {"mensaje":mensaje}
 
 # ----------------------------------------------------
 @app.get("/score_titulo/{titulo}", tags=['Consulta 3'])
