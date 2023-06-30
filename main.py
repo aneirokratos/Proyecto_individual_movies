@@ -50,7 +50,7 @@ async def cantidad_filmaciones_dia_endpoint(dia: str):
 
 # ----------------------------------------------------
 @app.get("/score_titulo/{titulo}", tags=['Consulta 3'])
-async def titulo_de_la_filmacion_endpoint(titulo: str):
+async def score_titulo_endpoint(title: str):
     """
     Endpoint para obtener información de una filmación a partir de su título.
     
