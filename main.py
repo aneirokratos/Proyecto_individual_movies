@@ -25,67 +25,28 @@ df_unido = pd.merge(df_peliculas, df_creditos, on='id')
 # ---------------------------------------------------
 @app.get("/cantidad_filmaciones_mes/{mes}", tags=['Consulta 1'])
 async def cantidad_filmaciones_mes_endpoint(mes: str):
-    """
-    Endpoint para obtener la cantidad de filmaciones de películas realizadas en un mes específico.
+        # Convertir la columna "release_date" a tipo datetime si no está en ese formato
+    df_unido['release_date'] = pd.to_datetime(df_unido['release_date'])
+    # Filtrar los datos por el mes especificado en español
+    data_filtrado = df_unido[df_unido['release_date'].dt.month_name(
+        locale='es') == mes]
+    # Obtener la cantidad de registros que coinciden
+    cantidad = len(data_filtrado)
+    mensaje = f"La cantidad de películas estrenadas en el mes es {cantidad}"
+    return mensaje
+
     
-    Args:
-        mes (str): Nombre del mes en formato de texto.
-    
-    Returns:
-        dict: Diccionario con el mensaje que indica la cantidad de filmaciones en el mes consultado.
-    """
-    # Convertir el nombre del mes a minúsculas para realizar la comparación
-    mes = mes.lower()
-
-    # Verificar si el valor del mes es válido
-    meses_validos = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
-    if mes not in meses_validos:
-        raise HTTPException(status_code=400, detail="El valor del mes es incorrecto.")
-
-    # Extraer los DataFrames del archivo ZIP
-    datasets_df, _, _, _, _ = df_unido
-
-    # Filtrar el DataFrame para obtener las filas correspondientes al mes consultado
-    filmaciones_mes = datasets_df[datasets_df['month_time'].str.lower() == mes]
-
-    # Obtener la cantidad de películas estrenadas en el mes consultado
-    cantidad_filmaciones = len(filmaciones_mes)
-
-    mensaje = f"La cantidad de películas estrenadas en {mes.capitalize()} es: {cantidad_filmaciones}"
-    return {"mensaje": mensaje}
+  
 
 # ----------------------------------------------------
 @app.get("/cantidad_filmaciones_dia/{dia}", tags=['Consulta 2'])
 async def cantidad_filmaciones_dia_endpoint(dia: str):
-    """
-    Endpoint para obtener la cantidad de filmaciones de películas realizadas en un día específico.
-    
-    Args:
-        dia (str): Nombre del día en formato de texto.
-    
-    Returns:
-        dict: Diccionario con el mensaje que indica la cantidad de filmaciones en el día consultado.
-    """
-    # Convertir el nombre del día a minúsculas para realizar la comparación
-    dia = dia.lower()
-
-    # Verificar si el valor del día es válido
-    dias_validos = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
-    if dia not in dias_validos:
-        raise HTTPException(status_code=400, detail="El valor del día es incorrecto.")
-
-
-    # Extraer los DataFrames del archivo ZIP
-    datasets_df, _, _, _, _ = df_unido
-
-    # Filtrar el DataFrame para obtener las filas correspondientes al día consultado
-    filmaciones_dia = datasets_df[datasets_df['day_time'].str.lower() == dia]
-
-    # Obtener la cantidad de películas estrenadas en el día consultado
-    cantidad_filmaciones = len(filmaciones_dia)
-
-    mensaje = f"La cantidad de películas estrenadas en {dia.capitalize()} es: {cantidad_filmaciones}"
-    return {"mensaje": mensaje}
+    data_filtrado = df_unido[df_unido['release_date'].dt.day_name(
+        locale='es') == dia]
+    # Obtener la cantidad de registros que coinciden
+    cantidad = len(data_filtrado)
+    mensaje = f"La cantidad de películas estrenadas en el día es {cantidad}"
+    return {mensaje}
 
 # ----------------------------------------------------
 @app.get("/score_titulo/{titulo}", tags=['Consulta 3'])
